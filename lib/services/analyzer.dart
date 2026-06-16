@@ -23,7 +23,6 @@ LEADS: lead type1, lead type2, lead type3, lead type4, lead type5
 ''';
 
     final result = await _ai.ask(prompt);
-    print('Raw AI response: $result');
     final lines = result.split('\n');
 
     List<String> services = [];
