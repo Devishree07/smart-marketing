@@ -20,8 +20,8 @@ class MyApp extends StatelessWidget {
       ),
       home: const HomeScreen(),
       routes: {
-        '/leads': (context) => const LeadsScreen(),
-        '/results': (context) => const ResultsScreen(),
+        '/leads': (context) => LeadsScreen(),
+'/results': (context) => ResultsScreen(),
       },
     );
   }

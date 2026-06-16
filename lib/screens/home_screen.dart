@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.all(16),
               ),
-              child: const Text('Find Leads', fontSize: 18),
+              child: const Text('Find Leads', style: TextStyle(fontSize: 18)),
             ),
           ],
         ),
