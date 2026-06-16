@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/lead.dart';
+import 'package:flutter/services.dart';
 
 class ResultsScreen extends StatelessWidget {
   const ResultsScreen({super.key});
@@ -21,6 +21,17 @@ class ResultsScreen extends StatelessWidget {
       'pitch': 'We have tools that can 3x your lead generation pipeline.',
     },
   ];
+
+  void _copyToClipboard(BuildContext context, String text) {
+    Clipboard.setData(ClipboardData(text: text));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Copied to clipboard!'),
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.indigo,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,19 +57,45 @@ class ResultsScreen extends StatelessWidget {
                       style: const TextStyle(
                           fontSize: 16, fontWeight: FontWeight.bold)),
                   const Divider(height: 20),
-                  const Text('Generated Email',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w500, color: Colors.indigo)),
-                  const SizedBox(height: 6),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Generated Email',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Colors.indigo)),
+                      IconButton(
+                        icon: const Icon(Icons.copy, size: 18),
+                        onPressed: () =>
+                            _copyToClipboard(context, result['email']!),
+                        tooltip: 'Copy email',
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
                   Text(result['email']!,
-                      style: const TextStyle(fontSize: 12, color: Colors.black87)),
+                      style: const TextStyle(
+                          fontSize: 12, color: Colors.black87)),
                   const SizedBox(height: 12),
-                  const Text('Portfolio Pitch',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w500, color: Colors.indigo)),
-                  const SizedBox(height: 6),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Portfolio Pitch',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Colors.indigo)),
+                      IconButton(
+                        icon: const Icon(Icons.copy, size: 18),
+                        onPressed: () =>
+                            _copyToClipboard(context, result['pitch']!),
+                        tooltip: 'Copy pitch',
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
                   Text(result['pitch']!,
-                      style: const TextStyle(fontSize: 12, color: Colors.black87)),
+                      style: const TextStyle(
+                          fontSize: 12, color: Colors.black87)),
                 ],
               ),
             ),
