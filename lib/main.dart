@@ -1,25 +1,19 @@
 import 'package:flutter/material.dart';
-import 'services/ai_service.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  
-  final ai = AiService();
-  final result = await ai.ask('Say hello in one sentence');
-  print('AI Response: $result');
-  
+void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
+      title: 'Smart Marketing',
       home: Scaffold(
         body: Center(
-          child: Text('Check terminal for AI response!'),
+          child: Text('Smart Marketing App'),
         ),
       ),
     );

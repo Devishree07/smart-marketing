@@ -11,21 +11,18 @@ class EmailGenerator {
     required String leadIndustry,
   }) async {
     final prompt = '''
-Write a short, professional cold outreach email.
+Write a cold outreach email. Be specific, friendly and professional.
 
-We are: $ourBusinessName
+From: $ourBusinessName
 Our services: $ourServices
-We are reaching out to: $leadName from $leadBusiness
-Their industry: $leadIndustry
+To: $leadBusiness (in $leadIndustry industry)
 
 Rules:
-- Keep it under 100 words
-- Be friendly and specific
-- Mention how our services help their business
-- End with a call to action
-- Do not use generic phrases like "I hope this email finds you well"
-
-Write only the email body, no subject line.
+- Max 80 words
+- No "I hope this finds you well"
+- Mention exactly how we help their business
+- End with a clear call to action
+- Write only the email body, no subject line
 ''';
 
     return await _ai.ask(prompt);
@@ -36,10 +33,10 @@ Write only the email body, no subject line.
     required String ourServices,
   }) async {
     final prompt = '''
-Write a short catchy email subject line for a cold outreach email.
-We are offering: $ourServices
-Reaching out to: $leadBusiness
-Return only the subject line, nothing else. Max 8 words.
+Write a catchy cold email subject line.
+We offer: $ourServices
+Writing to: $leadBusiness
+Max 8 words. Return only the subject line.
 ''';
 
     return await _ai.ask(prompt);
