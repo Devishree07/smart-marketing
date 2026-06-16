@@ -1,32 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import '../models/lead.dart';
 
 class ResultsScreen extends StatelessWidget {
-  const ResultsScreen({super.key});
-
-  final List<Map<String, String>> _results = const [
-    {
-      'business': 'Tech Solutions Ltd',
-      'email':
-          'Subject: Partnership Opportunity\n\nHi Tech Solutions team,\n\nI came across your work and believe we can help grow your digital presence...',
-      'pitch':
-          'Our portfolio includes 3 similar tech companies we helped scale 2x in 6 months.',
-    },
-    {
-      'business': 'Creative Agency Co',
-      'email':
-          'Subject: Collaboration Idea\n\nHi Creative Agency team,\n\nYour creative work caught our attention...',
-      'pitch':
-          'We specialize in helping creative agencies automate their client outreach.',
-    },
-    {
-      'business': 'Digital Marketing Hub',
-      'email':
-          'Subject: Quick Question\n\nHi DMHub team,\n\nI noticed you help businesses with digital marketing...',
-      'pitch': 'We have tools that can 3x your lead generation pipeline.',
-    },
-  ];
+  final List<Lead> leads;
+  const ResultsScreen({super.key, required this.leads});
 
   void _copyToClipboard(BuildContext context, String text) {
+    Clipboard.setData(ClipboardData(text: text));
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Copied to clipboard!'),
@@ -43,77 +24,100 @@ class ResultsScreen extends StatelessWidget {
         title: const Text('Results'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: _results.length,
-        itemBuilder: (context, index) {
-          final result = _results[index];
-          return Card(
-            margin: const EdgeInsets.only(bottom: 16),
-            elevation: 2,
-            child: Padding(
+      body: leads.isEmpty
+          ? const Center(child: Text('No results found.'))
+          : ListView.builder(
               padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(result['business']!,
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold)),
-                  const Divider(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Generated Email',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: Colors.indigo)),
-                      IconButton(
-                        icon: const Icon(Icons.copy, size: 18),
-                        onPressed: () =>
-                            _copyToClipboard(context, result['email']!),
-                        tooltip: 'Copy email',
-                      ),
-                    ],
+              itemCount: leads.length,
+              itemBuilder: (context, index) {
+                final lead = leads[index];
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  elevation: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(Icons.business, color: Colors.indigo),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(lead.businessName,
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                          ],
+                        ),
+                        const Divider(height: 20),
+
+                        // Generated Email
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('Generated Email',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.indigo)),
+                            IconButton(
+                              icon: const Icon(Icons.copy, size: 18),
+                              onPressed: () => _copyToClipboard(
+                                  context, lead.generatedEmail),
+                              tooltip: 'Copy email',
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Text(lead.generatedEmail,
+                            style: const TextStyle(
+                                fontSize: 12, color: Colors.black87)),
+                        const SizedBox(height: 12),
+
+                        // Portfolio Pitch
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('Portfolio Pitch',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.indigo)),
+                            IconButton(
+                              icon: const Icon(Icons.copy, size: 18),
+                              onPressed: () => _copyToClipboard(
+                                  context, lead.portfolioPitch),
+                              tooltip: 'Copy pitch',
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Text(lead.portfolioPitch,
+                            style: const TextStyle(
+                                fontSize: 12, color: Colors.black87)),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(result['email']!,
-                      style: const TextStyle(
-                          fontSize: 12, color: Colors.black87)),
-                  const SizedBox(height: 12),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Portfolio Pitch',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: Colors.indigo)),
-                      IconButton(
-                        icon: const Icon(Icons.copy, size: 18),
-                        onPressed: () =>
-                            _copyToClipboard(context, result['pitch']!),
-                        tooltip: 'Copy pitch',
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(result['pitch']!,
-                      style: const TextStyle(
-                          fontSize: 12, color: Colors.black87)),
-                ],
-              ),
+                );
+              },
             ),
-          );
-        },
-      ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                final allText = leads.map((lead) =>
+                  'Business: ${lead.businessName}\n'
+                  'Email: ${lead.generatedEmail}\n'
+                  'Pitch: ${lead.portfolioPitch}\n'
+                  '---'
+                ).join('\n');
+                _copyToClipboard(context, allText);
+              },
               icon: const Icon(Icons.download),
-              label: const Text('Export Results'),
+              label: const Text('Export All Results'),
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 50),
                 backgroundColor: Colors.indigo,
