@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import '../models/lead.dart';
+import 'results_screen.dart';
 
 class LeadsScreen extends StatefulWidget {
-  const LeadsScreen({super.key});
+  final bool showResultsButton;
+  const LeadsScreen({super.key, this.showResultsButton = false});
 
   @override
   State<LeadsScreen> createState() => _LeadsScreenState();
@@ -95,7 +97,8 @@ class _LeadsScreenState extends State<LeadsScreen> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                      contentPadding:
+                          const EdgeInsets.symmetric(vertical: 10),
                     ),
                   ),
                 ),
@@ -103,7 +106,8 @@ class _LeadsScreenState extends State<LeadsScreen> {
                   child: _filteredLeads.isEmpty
                       ? const Center(child: Text('No leads found.'))
                       : ListView.builder(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: 12),
                           itemCount: _filteredLeads.length,
                           itemBuilder: (context, index) {
                             final lead = _filteredLeads[index];
@@ -113,7 +117,8 @@ class _LeadsScreenState extends State<LeadsScreen> {
                               child: Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
                                   children: [
                                     Row(
                                       children: [
@@ -123,14 +128,16 @@ class _LeadsScreenState extends State<LeadsScreen> {
                                         Text(lead.businessName,
                                             style: const TextStyle(
                                                 fontSize: 16,
-                                                fontWeight: FontWeight.bold)),
+                                                fontWeight:
+                                                    FontWeight.bold)),
                                       ],
                                     ),
                                     const SizedBox(height: 8),
                                     Row(
                                       children: [
                                         const Icon(Icons.email,
-                                            size: 14, color: Colors.grey),
+                                            size: 14,
+                                            color: Colors.grey),
                                         const SizedBox(width: 6),
                                         Text(lead.contactEmail,
                                             style: const TextStyle(
@@ -139,8 +146,9 @@ class _LeadsScreenState extends State<LeadsScreen> {
                                     ),
                                     const SizedBox(height: 10),
                                     Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10, vertical: 4),
+                                      padding:
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 4),
                                       decoration: BoxDecoration(
                                         color: Colors.indigo.shade50,
                                         borderRadius:
@@ -158,6 +166,26 @@ class _LeadsScreenState extends State<LeadsScreen> {
                           },
                         ),
                 ),
+                if (widget.showResultsButton)
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const ResultsScreen()),
+                        );
+                      },
+                      icon: const Icon(Icons.arrow_forward),
+                      label: const Text('See Results'),
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(double.infinity, 50),
+                        backgroundColor: Colors.indigo,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ),
               ],
             ),
     );

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class ResultsScreen extends StatelessWidget {
   const ResultsScreen({super.key});
@@ -7,23 +6,27 @@ class ResultsScreen extends StatelessWidget {
   final List<Map<String, String>> _results = const [
     {
       'business': 'Tech Solutions Ltd',
-      'email': 'Subject: Partnership Opportunity\n\nHi Tech Solutions team,\n\nI came across your work and believe we can help grow your digital presence...',
-      'pitch': 'Our portfolio includes 3 similar tech companies we helped scale 2x in 6 months.',
+      'email':
+          'Subject: Partnership Opportunity\n\nHi Tech Solutions team,\n\nI came across your work and believe we can help grow your digital presence...',
+      'pitch':
+          'Our portfolio includes 3 similar tech companies we helped scale 2x in 6 months.',
     },
     {
       'business': 'Creative Agency Co',
-      'email': 'Subject: Collaboration Idea\n\nHi Creative Agency team,\n\nYour creative work caught our attention...',
-      'pitch': 'We specialize in helping creative agencies automate their client outreach.',
+      'email':
+          'Subject: Collaboration Idea\n\nHi Creative Agency team,\n\nYour creative work caught our attention...',
+      'pitch':
+          'We specialize in helping creative agencies automate their client outreach.',
     },
     {
       'business': 'Digital Marketing Hub',
-      'email': 'Subject: Quick Question\n\nHi DMHub team,\n\nI noticed you help businesses with digital marketing...',
+      'email':
+          'Subject: Quick Question\n\nHi DMHub team,\n\nI noticed you help businesses with digital marketing...',
       'pitch': 'We have tools that can 3x your lead generation pipeline.',
     },
   ];
 
   void _copyToClipboard(BuildContext context, String text) {
-    Clipboard.setData(ClipboardData(text: text));
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Copied to clipboard!'),
@@ -104,15 +107,34 @@ class ResultsScreen extends StatelessWidget {
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16),
-        child: ElevatedButton.icon(
-          onPressed: () {},
-          icon: const Icon(Icons.download),
-          label: const Text('Export Results'),
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.all(16),
-            backgroundColor: Colors.indigo,
-            foregroundColor: Colors.white,
-          ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ElevatedButton.icon(
+              onPressed: () {},
+              icon: const Icon(Icons.download),
+              label: const Text('Export Results'),
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 50),
+                backgroundColor: Colors.indigo,
+                foregroundColor: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.of(context).popUntil((route) => route.isFirst);
+              },
+              icon: const Icon(Icons.home),
+              label: const Text('Back to Home'),
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 50),
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.indigo,
+                side: const BorderSide(color: Colors.indigo),
+              ),
+            ),
+          ],
         ),
       ),
     );

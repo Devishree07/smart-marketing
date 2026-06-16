@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'leads_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -88,7 +89,24 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                if (_nameController.text.isEmpty ||
+                    _descController.text.isEmpty ||
+                    _urlController.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please fill in all fields first!'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          const LeadsScreen(showResultsButton: true)),
+                );
+              },
               icon: const Icon(Icons.search),
               label: const Text('Find Leads',
                   style: TextStyle(fontSize: 18)),
