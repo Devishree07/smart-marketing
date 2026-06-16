@@ -1,28 +1,27 @@
 import 'package:flutter/material.dart';
-import 'screens/home_screen.dart';
-import 'screens/leads_screen.dart';
-import 'screens/results_screen.dart';
+import 'services/ai_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  final ai = AiService();
+  final result = await ai.ask('Say hello in one sentence');
+  print('AI Response: $result');
+  
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
+  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Smart Marketing',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
-        useMaterial3: true,
+      home: Scaffold(
+        body: Center(
+          child: Text('Check terminal for AI response!'),
+        ),
       ),
-      home: const HomeScreen(),
-      routes: {
-        '/leads': (context) => const LeadsScreen(),
-        '/results': (context) => const ResultsScreen(),
-      },
     );
   }
 }
