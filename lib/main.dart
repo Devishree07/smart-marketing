@@ -14,11 +14,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: 'Smart Marketing',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
-        useMaterial3: true,
+      home: Scaffold(
+        body: Center(
+          child: Text('Smart Marketing App'),
+        ),
       ),
       home: const MainShell(),
     );
