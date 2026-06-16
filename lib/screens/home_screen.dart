@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/lead_service.dart';
 import 'leads_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -13,19 +14,57 @@ class _HomeScreenState extends State<HomeScreen> {
   final _descController = TextEditingController();
   final _urlController = TextEditingController();
   String _selectedIndustry = 'Technology';
+  bool _isLoading = false;
 
   final List<String> _industries = [
-    'Technology',
-    'Healthcare',
-    'Finance',
-    'Education',
-    'Retail',
-    'Marketing',
-    'Real Estate',
-    'Food & Beverage',
-    'Entertainment',
-    'Other',
+    'Technology', 'Healthcare', 'Finance', 'Education',
+    'Retail', 'Marketing', 'Real Estate', 'Food & Beverage',
+    'Entertainment', 'Other',
   ];
+
+  Future<void> _findLeads() async {
+    if (_nameController.text.isEmpty ||
+        _descController.text.isEmpty ||
+        _urlController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please fill in all fields first!'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      final leads = await LeadService().generateLeads(
+        businessName: _nameController.text,
+        businessDescription: _descController.text,
+        businessUrl: _urlController.text,
+      );
+
+      if (!mounted) return;
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => LeadsScreen(
+            leads: leads,
+            showResultsButton: true,
+          ),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,27 +128,21 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
-              onPressed: () {
-                if (_nameController.text.isEmpty ||
-                    _descController.text.isEmpty ||
-                    _urlController.text.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Please fill in all fields first!'),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                  return;
-                }
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          const LeadsScreen(showResultsButton: true)),
-                );
-              },
-              icon: const Icon(Icons.search),
-              label: const Text('Find Leads',
-                  style: TextStyle(fontSize: 18)),
+              onPressed: _isLoading ? null : _findLeads,
+              icon: _isLoading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    )
+                  : const Icon(Icons.search),
+              label: Text(
+                _isLoading ? 'Finding Leads...' : 'Find Leads',
+                style: const TextStyle(fontSize: 18),
+              ),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.all(16),
                 backgroundColor: Colors.indigo,
