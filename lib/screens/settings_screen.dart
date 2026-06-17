@@ -1,3 +1,4 @@
+import '../main.dart';
 import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -9,7 +10,6 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _darkMode = false;
-  bool _notifications = true;
   String _selectedLanguage = 'English';
 
   final List<String> _languages = ['English', 'Spanish', 'French', 'German', 'Hindi'];
@@ -36,7 +36,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             subtitle: const Text('Switch to dark theme'),
             secondary: const Icon(Icons.dark_mode),
             value: _darkMode,
-            onChanged: (val) => setState(() => _darkMode = val),
+            onChanged: (val) {
+              setState(() => _darkMode = val);
+              themeNotifier.value = val;
+            },
           ),
           const Divider(),
           const Padding(
@@ -46,13 +49,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     fontWeight: FontWeight.bold,
                     color: Colors.indigo,
                     fontSize: 13)),
-          ),
-          SwitchListTile(
-            title: const Text('Notifications'),
-            subtitle: const Text('Get notified when leads are found'),
-            secondary: const Icon(Icons.notifications),
-            value: _notifications,
-            onChanged: (val) => setState(() => _notifications = val),
           ),
           ListTile(
             leading: const Icon(Icons.language),
