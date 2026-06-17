@@ -27,6 +27,11 @@ class ResultsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final cardColor = isDark ? Colors.grey.shade800 : Colors.white;
+    final headingColor = isDark ? Colors.white : Colors.black87;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Results'),
@@ -102,8 +107,7 @@ class ResultsScreen extends StatelessWidget {
                                   child: Text(
                                     'Weakness: ${competitor['weakness']}',
                                     style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.orange),
+                                        fontSize: 12, color: Colors.orange),
                                   ),
                                 ),
                               ],
@@ -163,12 +167,15 @@ class ResultsScreen extends StatelessWidget {
             ],
 
             // Leads Section
-            const Text('Generated Leads',
+            Text('Generated Leads',
                 style: TextStyle(
-                    fontSize: 18, fontWeight: FontWeight.bold)),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: headingColor)),
             const SizedBox(height: 12),
 
             ...leads.map((lead) => Card(
+              color: cardColor,
               margin: const EdgeInsets.only(bottom: 16),
               elevation: 2,
               child: Padding(
@@ -182,9 +189,10 @@ class ResultsScreen extends StatelessWidget {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(lead.businessName,
-                              style: const TextStyle(
+                              style: TextStyle(
                                   fontSize: 16,
-                                  fontWeight: FontWeight.bold)),
+                                  fontWeight: FontWeight.bold,
+                                  color: textColor)),
                         ),
                       ],
                     ),
@@ -199,7 +207,7 @@ class ResultsScreen extends StatelessWidget {
                                 fontWeight: FontWeight.w500,
                                 color: Colors.indigo)),
                         IconButton(
-                          icon: const Icon(Icons.copy, size: 18),
+                          icon: Icon(Icons.copy, size: 18, color: textColor),
                           onPressed: () => _copyToClipboard(
                               context, lead.generatedEmail),
                           tooltip: 'Copy email',
@@ -208,8 +216,7 @@ class ResultsScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(lead.generatedEmail,
-                        style: const TextStyle(
-                            fontSize: 12, color: Colors.black87)),
+                        style: TextStyle(fontSize: 12, color: textColor)),
                     const SizedBox(height: 12),
 
                     // Portfolio Pitch
@@ -221,7 +228,7 @@ class ResultsScreen extends StatelessWidget {
                                 fontWeight: FontWeight.w500,
                                 color: Colors.indigo)),
                         IconButton(
-                          icon: const Icon(Icons.copy, size: 18),
+                          icon: Icon(Icons.copy, size: 18, color: textColor),
                           onPressed: () => _copyToClipboard(
                               context, lead.portfolioPitch),
                           tooltip: 'Copy pitch',
@@ -230,8 +237,7 @@ class ResultsScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(lead.portfolioPitch,
-                        style: const TextStyle(
-                            fontSize: 12, color: Colors.black87)),
+                        style: TextStyle(fontSize: 12, color: textColor)),
                   ],
                 ),
               ),
@@ -280,7 +286,7 @@ class ResultsScreen extends StatelessWidget {
               label: const Text('Back to Home'),
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 50),
-                backgroundColor: Colors.white,
+                backgroundColor: isDark ? Colors.grey.shade800 : Colors.white,
                 foregroundColor: Colors.indigo,
                 side: const BorderSide(color: Colors.indigo),
               ),
