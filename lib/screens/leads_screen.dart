@@ -50,6 +50,12 @@ class _LeadsScreenState extends State<LeadsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final cardColor = isDark ? Colors.grey.shade800 : Colors.white;
+    final competitorBg = isDark ? Colors.indigo.shade900 : Colors.indigo.shade50;
+    final positioningBg = isDark ? Colors.indigo.shade800 : Colors.indigo.shade100;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Discovered Leads'),
@@ -85,8 +91,10 @@ class _LeadsScreenState extends State<LeadsScreen> {
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                           color: Colors.indigo)),
-                  subtitle: Text('${widget.competitors.length} competitors found',
-                      style: const TextStyle(fontSize: 11)),
+                  subtitle: Text(
+                    '${widget.competitors.length} competitors found',
+                    style: TextStyle(fontSize: 11, color: textColor),
+                  ),
                   initiallyExpanded: false,
                   onExpansionChanged: (val) =>
                       setState(() => _competitorExpanded = val),
@@ -103,7 +111,7 @@ class _LeadsScreenState extends State<LeadsScreen> {
                               margin: const EdgeInsets.only(bottom: 10),
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: Colors.indigo.shade50,
+                                color: competitorBg,
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Column(
@@ -112,19 +120,18 @@ class _LeadsScreenState extends State<LeadsScreen> {
                                   Row(
                                     children: [
                                       Text(medals[index],
-                                          style:
-                                              const TextStyle(fontSize: 18)),
+                                          style: const TextStyle(fontSize: 18)),
                                       const SizedBox(width: 8),
                                       Text(competitor['name'] ?? '',
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 14)),
+                                              fontSize: 14,
+                                              color: textColor)),
                                     ],
                                   ),
                                   const SizedBox(height: 6),
                                   Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       const Icon(Icons.warning_amber,
                                           size: 14, color: Colors.orange),
@@ -133,16 +140,14 @@ class _LeadsScreenState extends State<LeadsScreen> {
                                         child: Text(
                                           'Weakness: ${competitor['weakness']}',
                                           style: const TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.orange),
+                                              fontSize: 12, color: Colors.orange),
                                         ),
                                       ),
                                     ],
                                   ),
                                   const SizedBox(height: 4),
                                   Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       const Icon(Icons.check_circle,
                                           size: 14, color: Colors.green),
@@ -151,8 +156,7 @@ class _LeadsScreenState extends State<LeadsScreen> {
                                         child: Text(
                                           'Your edge: ${competitor['positioning']}',
                                           style: const TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.green),
+                                              fontSize: 12, color: Colors.green),
                                         ),
                                       ),
                                     ],
@@ -165,7 +169,7 @@ class _LeadsScreenState extends State<LeadsScreen> {
                             Container(
                               padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
-                                color: Colors.indigo.shade100,
+                                color: positioningBg,
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Row(
@@ -177,9 +181,9 @@ class _LeadsScreenState extends State<LeadsScreen> {
                                   Expanded(
                                     child: Text(
                                       widget.positioning,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                           fontSize: 12,
-                                          color: Colors.indigo,
+                                          color: textColor,
                                           fontStyle: FontStyle.italic),
                                     ),
                                   ),
@@ -206,6 +210,7 @@ class _LeadsScreenState extends State<LeadsScreen> {
                     itemBuilder: (context, index) {
                       final lead = _filteredLeads[index];
                       return Card(
+                        color: cardColor,
                         margin: const EdgeInsets.only(bottom: 12),
                         elevation: 2,
                         child: Padding(
@@ -220,16 +225,17 @@ class _LeadsScreenState extends State<LeadsScreen> {
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: Text(lead.businessName,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                             fontSize: 16,
-                                            fontWeight: FontWeight.bold)),
+                                            fontWeight: FontWeight.bold,
+                                            color: textColor)),
                                   ),
                                 ],
                               ),
                               const SizedBox(height: 10),
                               Text(lead.portfolioPitch,
-                                  style: const TextStyle(
-                                      color: Colors.black87, fontSize: 13)),
+                                  style: TextStyle(
+                                      color: textColor, fontSize: 13)),
                               const SizedBox(height: 10),
                               Container(
                                 padding: const EdgeInsets.symmetric(
