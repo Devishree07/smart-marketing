@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/lead_service.dart';
+import '../services/history_store.dart';
+import '../models/search_history.dart';
 import 'leads_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -35,7 +37,6 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    // URL validation
     final url = _urlController.text.trim();
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -66,6 +67,14 @@ class _HomeScreenState extends State<HomeScreen> {
         businessDescription: _descController.text,
         businessUrl: _urlController.text,
       );
+
+      HistoryStore.add(SearchHistory(
+        businessName: _nameController.text,
+        description: _descController.text,
+        url: _urlController.text,
+        industry: _selectedIndustry,
+        date: DateTime.now(),
+      ));
 
       if (!mounted) return;
       Navigator.of(context).push(
