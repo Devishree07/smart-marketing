@@ -35,6 +35,29 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
+    // URL validation
+    final url = _urlController.text.trim();
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a valid URL starting with https://'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
+    final uri = Uri.tryParse(url);
+    if (uri == null || uri.host.isEmpty || !uri.host.contains('.')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a real business website URL!'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     setState(() => _isLoading = true);
 
     try {
@@ -103,9 +126,10 @@ class _HomeScreenState extends State<HomeScreen> {
             TextField(
               controller: _urlController,
               decoration: const InputDecoration(
-                labelText: 'Website URL',
+                labelText: 'Website URL (https://...)',
                 prefixIcon: Icon(Icons.link),
                 border: OutlineInputBorder(),
+                hintText: 'https://example.com',
               ),
             ),
             const SizedBox(height: 12),

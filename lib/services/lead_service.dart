@@ -13,9 +13,20 @@ class LeadService {
     required String businessDescription,
     required String businessUrl,
   }) async {
-    // Step 1: Analyze the business
+
+    // Extract real business name from URL
+    final uri = Uri.tryParse(businessUrl);
+    String realName = businessName;
+    if (uri != null && uri.host.isNotEmpty) {
+      realName = uri.host
+          .replaceAll('www.', '')
+          .split('.')[0];
+      realName = realName[0].toUpperCase() + realName.substring(1);
+    }
+
+    // Step 1: Analyze the business using real name
     final analysis = await _analyzer.analyzeBusiness(
-      businessName: businessName,
+      businessName: realName,
       businessDescription: businessDescription,
       businessUrl: businessUrl,
     );
@@ -29,7 +40,7 @@ class LeadService {
 
     for (final leadType in leadTypes) {
       final emailBody = await _emailGen.generateEmail(
-        ourBusinessName: businessName,
+        ourBusinessName: realName,
         ourServices: services,
         leadName: leadType,
         leadBusiness: leadType,
@@ -37,7 +48,7 @@ class LeadService {
       );
 
       final pitch = await _portfolioGen.generatePitch(
-        ourBusinessName: businessName,
+        ourBusinessName: realName,
         ourServices: services,
         leadBusiness: leadType,
         leadIndustry: industry,
