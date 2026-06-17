@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final leads = await LeadService().generateLeads(
+      final result = await LeadService().generateLeadsWithCompetitors(
         businessName: _nameController.text,
         businessDescription: _descController.text,
         businessUrl: _urlController.text,
@@ -71,7 +71,9 @@ class _HomeScreenState extends State<HomeScreen> {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => LeadsScreen(
-            leads: leads,
+            leads: result['leads'],
+            competitors: result['competitors'],
+            positioning: result['positioning'],
             showResultsButton: true,
           ),
         ),

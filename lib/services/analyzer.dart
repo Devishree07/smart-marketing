@@ -15,7 +15,7 @@ Business Name: $businessName
 Description: $businessDescription
 Website: $businessUrl
 
-Reply in this EXACT format, nothing else:
+Reply in this EXACT format, nothing else, no extra text:
 SERVICES: service1, service2, service3
 AUDIENCE: describe their target audience in one line
 INDUSTRY: one word or short phrase

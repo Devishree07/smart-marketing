@@ -21,9 +21,7 @@ class AiService {
         }),
       );
 
-      print('Status code: ${response.statusCode}');
       final data = jsonDecode(response.body);
-
       if (data['choices'] != null && data['choices'].isNotEmpty) {
         return data['choices'][0]['message']['content'];
       } else {
