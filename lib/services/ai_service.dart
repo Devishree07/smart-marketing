@@ -4,7 +4,7 @@ import 'api_keys.dart';
 
 class AiService {
   static const String _apiKey = ApiKeys.groqKey;
-  static const String _url = 'https://api.groq.com/openai/v1/chat/completions';
+  static const String _url = 'https://corsproxy.io/?url=https://api.groq.com/openai/v1/chat/completions';
 
   Future<String> ask(String prompt) async {
     try {
