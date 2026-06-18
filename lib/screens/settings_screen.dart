@@ -22,6 +22,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     'Marathi',
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    _darkMode = themeNotifier.value;
+  }
+
   Future<void> _changeLanguage(String lang) async {
     setState(() => _isTranslating = true);
     await AppStrings.loadLanguage(lang);
