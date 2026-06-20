@@ -41,34 +41,28 @@ class AppStrings {
   }
 
   static Future<void> loadLanguage(String language) async {
-  if (language == 'English' || _cache.containsKey(language)) {
+    if (language == 'English' || _cache.containsKey(language)) {
+      currentLanguage = language;
+      return;
+    }
+
+    final ai = AiService();
+    final allText = _english.values.join(' ||| ');
+    final prompt =
+        'Translate each of these phrases to $language. Keep the same order, '
+        'separate your answers with " ||| " exactly like the input, '
+        'no extra text, no numbering:\n\n$allText';
+
+    final response = await ai.ask(prompt);
+    final translated = response.split('|||').map((s) => s.trim()).toList();
+    final keys = _english.keys.toList();
+
+    final Map<String, String> langMap = {};
+    for (int i = 0; i < keys.length && i < translated.length; i++) {
+      langMap[keys[i]] = translated[i];
+    }
+
+    _cache[language] = langMap;
     currentLanguage = language;
-    return;
   }
-
-  final ai = AiService();
-  final allText = _english.values.join(' ||| ');
-  final prompt =
-      'Translate each of these phrases to $language. Keep the same order, '
-      'separate your answers with " ||| " exactly like the input, '
-      'no extra text, no numbering:\n\n$allText';
-
-  print('Sending translation request for: $language');
-  final response = await ai.ask(prompt);
-  print('AI Response: $response');
-
-  final translated = response.split('|||').map((s) => s.trim()).toList();
-  final keys = _english.keys.toList();
-
-  print('Got ${translated.length} translations for ${keys.length} keys');
-
-  final Map<String, String> langMap = {};
-  for (int i = 0; i < keys.length && i < translated.length; i++) {
-    langMap[keys[i]] = translated[i];
-  }
-
-  _cache[language] = langMap;
-  currentLanguage = language;
-  print('Language cache updated: ${_cache[language]}');
-}
 }
