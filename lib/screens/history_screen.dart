@@ -1,6 +1,7 @@
 import '../models/search_history.dart';
 import '../services/history_store.dart';
 import 'package:flutter/material.dart';
+import 'leads_screen.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -58,7 +59,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       '${item.date.day}/${item.date.month}/${item.date.year}',
                       style: const TextStyle(fontSize: 11, color: Colors.grey),
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => LeadsScreen(
+                            leads: item.leads,
+                            competitors: item.competitors,
+                            positioning: item.positioning,
+                            showResultsButton: true,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 );
               },

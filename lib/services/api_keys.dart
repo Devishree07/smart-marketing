@@ -1,8 +1,3 @@
-class ApiKeys {
-<<<<<<< HEAD
-  static const String groqKey = '';
+class ApiKeys{
+  static const String groqKey='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';
 }
-=======
-  static const String groqKey = "";
-}
->>>>>>> 1c04c7829481defdf433520b24edda49b40f6523

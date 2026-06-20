@@ -103,6 +103,9 @@ class _HomeScreenState extends State<HomeScreen> {
         url: _urlController.text,
         industry: _selectedIndustry,
         date: DateTime.now(),
+        leads: result['leads'],
+        competitors: result['competitors'],
+        positioning: result['positioning'],
       ));
 
       if (!mounted) return;
