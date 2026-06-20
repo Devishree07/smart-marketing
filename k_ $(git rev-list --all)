@@ -1,0 +1,57 @@
+[33mcommit f94be290f8184d5239de0683a7611f58174ca73f[m
+Merge: 62d7ae9 3df3a16
+Author: Chintan-Naik-21 <chintannaik021@gmail.com>
+Date:   Thu Jun 18 23:02:06 2026 +0530
+
+    Resolve merge conflict in app_strings.dart
+
+[1mdiff --cc lib/services/ai_service.dart[m
+[1mindex e5da678,b4a8436..93e14b9[m
+[1m--- a/lib/services/ai_service.dart[m
+[1m+++ b/lib/services/ai_service.dart[m
+[36m@@@ -1,6 -1,6 +1,7 @@@[m
+  import 'dart:convert';[m
+  import 'package:http/http.dart' as http;[m
+  import 'api_keys.dart';[m
+[32m++import 'api_keys.dart';[m
+  [m
+  class AiService {[m
+    static const String _apiKey = ApiKeys.groqKey;[m
+[36m@@@ -9,6 -9,6 +10,11 @@@[m
+    Future<String> ask(String prompt) async {[m
+      try {[m
+        final response = await http.post([m
+[32m++        Uri.parse(_url),[m
+[32m++        headers: {[m
+[32m++          'Content-Type': 'application/json',[m
+[32m++          'Authorization': 'Bearer $_apiKey',[m
+[32m++        },[m
+          Uri.parse(_url),[m
+          headers: {[m
+            'Content-Type': 'application/json',[m
+[36m@@@ -19,10 -19,10 +25,16 @@@[m
+            'messages': [[m
+              {'role': 'user', 'content': prompt}[m
+            ],[m
+[32m++          'model': 'llama-3.3-70b-versatile',[m
+[32m++          'messages': [[m
+[32m++            {'role': 'user', 'content': prompt}[m
+[32m++          ],[m
+          }),[m
+        );[m
+  [m
+        final data = jsonDecode(response.body);[m
+[32m++      if (data['choices'] != null && data['choices'].isNotEmpty) {[m
+[32m++        return data['choices'][0]['message']['content'];[m
+        if (data['choices'] != null && data['choices'].isNotEmpty) {[m
+          return data['choices'][0]['message']['content'];[m
+        } else {[m
+[1mdiff --cc lib/services/api_keys.dart[m
+[1mindex 6c93df3,6c93df3..2348b00[m
+[1m--- a/lib/services/api_keys.dart[m
+[1m+++ b/lib/services/api_keys.dart[m
+[36m@@@ -1,3 -1,3 +1,3 @@@[m
+  class ApiKeys {[m
+[31m--  static const String groqKey = '';[m
+[32m++  static const String groqKey = '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';[m
+  }[m
