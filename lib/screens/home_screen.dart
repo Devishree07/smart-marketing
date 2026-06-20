@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../services/lead_service.dart';
 import '../services/history_store.dart';
@@ -17,12 +18,28 @@ class _HomeScreenState extends State<HomeScreen> {
   final _urlController = TextEditingController();
   String _selectedIndustry = 'Technology';
   bool _isLoading = false;
+  int _currentMessageIndex = 0;
+  Timer? _messageTimer;
 
   final List<String> _industries = [
     'Technology', 'Healthcare', 'Finance', 'Education',
     'Retail', 'Marketing', 'Real Estate', 'Food & Beverage',
     'Entertainment', 'Other',
   ];
+
+  final List<String> _loadingMessages = [
+    '🔍 Analyzing your business...',
+    '🎯 Identifying target leads...',
+    '✉️ Writing personalized emails...',
+    '📊 Researching competitors...',
+    '🚀 Almost done...',
+  ];
+
+  @override
+  void dispose() {
+    _messageTimer?.cancel();
+    super.dispose();
+  }
 
   Future<void> _findLeads() async {
     if (_nameController.text.isEmpty ||
@@ -59,7 +76,19 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    setState(() => _isLoading = true);
+    setState(() {
+      _isLoading = true;
+      _currentMessageIndex = 0;
+    });
+
+    _messageTimer = Timer.periodic(const Duration(seconds: 2), (_) {
+      if (mounted) {
+        setState(() {
+          _currentMessageIndex =
+              (_currentMessageIndex + 1) % _loadingMessages.length;
+        });
+      }
+    });
 
     try {
       final result = await LeadService().generateLeadsWithCompetitors(
@@ -96,6 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
     } finally {
+      _messageTimer?.cancel();
       setState(() => _isLoading = false);
     }
   }
@@ -175,8 +205,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     )
                   : const Icon(Icons.search),
               label: Text(
-                _isLoading ? 'Finding Leads...' : 'Find Leads',
-                style: const TextStyle(fontSize: 18),
+                _isLoading
+                    ? _loadingMessages[_currentMessageIndex]
+                    : 'Find Leads',
+                style: const TextStyle(fontSize: 15),
               ),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.all(16),
