@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../models/lead.dart';
+import '../services/pdf_service.dart';
 
 class ResultsScreen extends StatelessWidget {
   final List<Lead> leads;
@@ -251,6 +252,26 @@ class ResultsScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ElevatedButton.icon(
+              onPressed: () async {
+                await PdfService.generateAndDownload(
+                  businessName: leads.isNotEmpty
+                      ? leads[0].businessName
+                      : 'Report',
+                  leads: leads,
+                  competitors: competitors,
+                  positioning: positioning,
+                );
+              },
+              icon: const Icon(Icons.picture_as_pdf),
+              label: const Text('Export as PDF'),
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 50),
+                backgroundColor: Colors.indigo,
+                foregroundColor: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton.icon(
               onPressed: () {
                 final allText = [
                   if (competitors.isNotEmpty) ...[
@@ -269,8 +290,8 @@ class ResultsScreen extends StatelessWidget {
                 ].join('\n');
                 _copyToClipboard(context, allText);
               },
-              icon: const Icon(Icons.download),
-              label: const Text('Export All Results'),
+              icon: const Icon(Icons.copy),
+              label: const Text('Copy All Results'),
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 50),
                 backgroundColor: Colors.indigo,
