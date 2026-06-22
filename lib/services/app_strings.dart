@@ -33,6 +33,19 @@ class AppStrings {
     'clear_all_data': 'Clear All Data',
     'search_history': 'Search History',
     'no_history': 'No search history yet.',
+    'accent_color': 'Accent Color',
+    'indigo': 'Indigo',
+    'purple': 'Purple',
+    'teal': 'Teal',
+    'blue': 'Blue',
+    'pink': 'Pink',
+    'orange': 'Orange',
+    'custom': 'Custom',
+    'analyzing_business': 'Analyzing your business...',
+    'identifying_leads': 'Identifying target leads...',
+    'writing_emails': 'Writing personalized emails...',
+    'researching_competitors': 'Researching competitors...',
+    'almost_done': 'Almost done...',
   };
 
   static String get(String key) {
@@ -41,28 +54,54 @@ class AppStrings {
   }
 
   static Future<void> loadLanguage(String language) async {
-    if (language == 'English' || _cache.containsKey(language)) {
+    if (language == 'English') {
+      currentLanguage = language;
+      return;
+    }
+
+    // Already cached — just switch
+    if (_cache.containsKey(language)) {
       currentLanguage = language;
       return;
     }
 
     final ai = AiService();
-    final allText = _english.values.join(' ||| ');
-    final prompt =
-        'Translate each of these phrases to $language. Keep the same order, '
-        'separate your answers with " ||| " exactly like the input, '
-        'no extra text, no numbering:\n\n$allText';
-
-    final response = await ai.ask(prompt);
-    final translated = response.split('|||').map((s) => s.trim()).toList();
     final keys = _english.keys.toList();
+    final allText = keys.map((k) => _english[k]!).join(' ||| ');
+    final prompt =
+        'Translate each of these phrases to $language. '
+        'Keep the exact same order and count. '
+        'Separate each translation with " ||| " exactly. '
+        'Output ONLY the translations, no numbering, no extra text, no explanation:\n\n$allText';
 
-    final Map<String, String> langMap = {};
-    for (int i = 0; i < keys.length && i < translated.length; i++) {
-      langMap[keys[i]] = translated[i];
+    try {
+      final response = await ai.ask(prompt);
+
+      // Bail out if AI returned an error string
+      if (response.startsWith('Error:')) {
+        throw Exception(response);
+      }
+
+      final translated = response.split('|||').map((s) => s.trim()).toList();
+
+      // Only store if we got the right number of translations
+      if (translated.length != keys.length) {
+        throw Exception(
+            'Translation count mismatch: expected ${keys.length}, got ${translated.length}');
+      }
+
+      final Map<String, String> langMap = {};
+      for (int i = 0; i < keys.length; i++) {
+        final t = translated[i];
+        // Skip if a translation looks like an error or is empty
+        langMap[keys[i]] = (t.isEmpty || t.startsWith('Error')) ? _english[keys[i]]! : t;
+      }
+
+      _cache[language] = langMap;
+      currentLanguage = language;
+    } catch (e) {
+      // Don't update currentLanguage — keep whatever was set before
+      rethrow; // Let _changeLanguage in settings_screen show the error
     }
-
-    _cache[language] = langMap;
-    currentLanguage = language;
   }
 }

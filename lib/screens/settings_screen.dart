@@ -48,9 +48,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _changeLanguage(String lang) async {
     setState(() => _isTranslating = true);
-    await AppStrings.loadLanguage(lang);
-    languageNotifier.value = lang;
-    setState(() => _isTranslating = false);
+    try {
+      await AppStrings.loadLanguage(lang);
+      languageNotifier.value = lang;
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Translation failed: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      setState(() => _isTranslating = false);
+    }
   }
 
   @override
@@ -62,7 +74,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       body: Stack(
         children: [
-          ListView(
+          ValueListenableBuilder<String>(
+            valueListenable: languageNotifier,
+            builder: (context, _, __) => ListView(
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
@@ -133,20 +147,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         color: Theme.of(context).colorScheme.primary,
                         fontSize: 13)),
               ),
-              ListTile(
-                leading: const Icon(Icons.language),
-                title: Text(AppStrings.get('language')),
-                subtitle: Text(languageNotifier.value),
-                trailing: DropdownButton<String>(
-                  value: languageNotifier.value,
-                  underline: const SizedBox(),
-                  items: _languages.map((lang) {
-                    return DropdownMenuItem(value: lang, child: Text(lang));
-                  }).toList(),
-                  onChanged: (val) {
-                    if (val != null) _changeLanguage(val);
-                  },
-                ),
+              // FIX: Wrapped in ValueListenableBuilder so dropdown rebuilds when language changes
+              ValueListenableBuilder<String>(
+                valueListenable: languageNotifier,
+                builder: (context, currentLang, _) {
+                  return ListTile(
+                    leading: const Icon(Icons.language),
+                    title: Text(AppStrings.get('language')),
+                    subtitle: Text(currentLang),
+                    trailing: DropdownButton<String>(
+                      value: currentLang,
+                      underline: const SizedBox(),
+                      items: _languages.map((lang) {
+                        return DropdownMenuItem(value: lang, child: Text(lang));
+                      }).toList(),
+                      onChanged: (val) {
+                        if (val != null) _changeLanguage(val);
+                      },
+                    ),
+                  );
+                },
               ),
               const Divider(),
               Padding(
@@ -189,6 +209,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 },
               ),
             ],
+            ),
           ),
           if (_isTranslating)
             Container(
