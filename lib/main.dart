@@ -16,8 +16,13 @@ class LanguageNotifier extends ValueNotifier<String> {
   LanguageNotifier(String value) : super(value);
 }
 
+class AccentNotifier extends ValueNotifier<Color> {
+  AccentNotifier(Color value) : super(value);
+}
+
 final ThemeNotifier themeNotifier = ThemeNotifier(false);
 final LanguageNotifier languageNotifier = LanguageNotifier('English');
+final AccentNotifier accentNotifier = AccentNotifier(Colors.indigo);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -30,21 +35,26 @@ class MyApp extends StatelessWidget {
         return ValueListenableBuilder<String>(
           valueListenable: languageNotifier,
           builder: (context, language, __) {
-            return MaterialApp(
-              title: 'Smart Marketing',
-              theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
-                useMaterial3: true,
-              ),
-              darkTheme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(
-                  seedColor: Colors.indigo,
-                  brightness: Brightness.dark,
-                ),
-                useMaterial3: true,
-              ),
-              themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
-              home: const SplashScreen(),
+            return ValueListenableBuilder<Color>(
+              valueListenable: accentNotifier,
+              builder: (context, accent, ___) {
+                return MaterialApp(
+                  title: 'Smart Marketing',
+                  theme: ThemeData(
+                    colorScheme: ColorScheme.fromSeed(seedColor: accent),
+                    useMaterial3: true,
+                  ),
+                  darkTheme: ThemeData(
+                    colorScheme: ColorScheme.fromSeed(
+                      seedColor: accent,
+                      brightness: Brightness.dark,
+                    ),
+                    useMaterial3: true,
+                  ),
+                  themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+                  home: const SplashScreen(),
+                );
+              },
             );
           },
         );
@@ -71,19 +81,24 @@ class _MainShellState extends State<MainShell> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _screens[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.indigo,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
-        ],
-      ),
+    return ValueListenableBuilder<Color>(
+      valueListenable: accentNotifier,
+      builder: (context, accent, _) {
+        return Scaffold(
+          body: _screens[_currentIndex],
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: _currentIndex,
+            onTap: (index) => setState(() => _currentIndex = index),
+            type: BottomNavigationBarType.fixed,
+            selectedItemColor: accent,
+            items: const [
+              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+              BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
+              BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+            ],
+          ),
+        );
+      },
     );
   }
 }
