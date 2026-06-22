@@ -22,6 +22,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
     'Marathi',
   ];
 
+  final List<Color> _accentColors = [
+    Colors.indigo,
+    Colors.purple,
+    Colors.teal,
+    Colors.blue,
+    Colors.pink,
+    Colors.orange,
+  ];
+
+  final Map<Color, String> _colorNames = {
+    Colors.indigo: 'Indigo',
+    Colors.purple: 'Purple',
+    Colors.teal: 'Teal',
+    Colors.blue: 'Blue',
+    Colors.pink: 'Pink',
+    Colors.orange: 'Orange',
+  };
+
   @override
   void initState() {
     super.initState();
@@ -49,9 +67,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                 child: Text(AppStrings.get('appearance'),
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.indigo,
+                        color: Theme.of(context).colorScheme.primary,
                         fontSize: 13)),
               ),
               SwitchListTile(
@@ -64,13 +82,55 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   themeNotifier.value = val;
                 },
               ),
+              // accent color picker
+              ValueListenableBuilder<Color>(
+                valueListenable: accentNotifier,
+                builder: (context, accent, _) {
+                  return ListTile(
+                    leading: const Icon(Icons.palette),
+                    title: const Text('Accent Color'),
+                    subtitle: Text(_colorNames[accent] ?? 'Custom'),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: _accentColors.map((color) {
+                        final isSelected = accent == color;
+                        return GestureDetector(
+                          onTap: () {
+                            accentNotifier.value = color;
+                            setState(() {});
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 3),
+                            width: 24,
+                            height: 24,
+                            decoration: BoxDecoration(
+                              color: color,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: isSelected
+                                    ? Theme.of(context).colorScheme.onSurface
+                                    : Colors.transparent,
+                                width: 2,
+                              ),
+                            ),
+                            child: isSelected
+                                ? const Icon(Icons.check,
+                                    color: Colors.white, size: 14)
+                                : null,
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  );
+                },
+              ),
               const Divider(),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                 child: Text(AppStrings.get('preferences'),
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.indigo,
+                        color: Theme.of(context).colorScheme.primary,
                         fontSize: 13)),
               ),
               ListTile(
@@ -92,9 +152,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                 child: Text(AppStrings.get('about'),
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.indigo,
+                        color: Theme.of(context).colorScheme.primary,
                         fontSize: 13)),
               ),
               ListTile(
