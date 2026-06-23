@@ -1,4 +1,5 @@
 import '../models/lead.dart';
+import '../screens/settings_screen.dart';
 import 'analyzer.dart';
 import 'email_gen.dart';
 import 'portfolio_gen.dart';
@@ -33,7 +34,12 @@ class LeadService {
       businessUrl: businessUrl,
     );
 
-    final List<String> leadTypes = List<String>.from(analysis['leads']);
+    // Use lead count from settings
+    final List<String> allLeadTypes = List<String>.from(analysis['leads']);
+    final List<String> leadTypes = allLeadTypes
+        .take(leadCountNotifier.value)
+        .toList();
+
     final String services = (analysis['services'] as List).join(', ');
     final String industry = analysis['industry'];
 
