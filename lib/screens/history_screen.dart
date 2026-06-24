@@ -20,6 +20,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
     HistoryStore.removeAt(index);
     setState(() {});
 
+    ScaffoldMessenger.of(context).clearSnackBars();
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('${deleted.businessName} removed'),
@@ -30,7 +32,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
             setState(() {});
           },
         ),
-        duration: const Duration(seconds: 3),
+        duration: const Duration(seconds: 5),
       ),
     );
   }

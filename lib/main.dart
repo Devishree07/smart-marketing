@@ -43,6 +43,10 @@ class MyApp extends StatelessWidget {
                   theme: ThemeData(
                     colorScheme: ColorScheme.fromSeed(seedColor: accent),
                     useMaterial3: true,
+                    snackBarTheme: const SnackBarThemeData(
+                      behavior: SnackBarBehavior.floating,
+                      dismissDirection: DismissDirection.down,
+                    ),
                   ),
                   darkTheme: ThemeData(
                     colorScheme: ColorScheme.fromSeed(
@@ -50,6 +54,10 @@ class MyApp extends StatelessWidget {
                       brightness: Brightness.dark,
                     ),
                     useMaterial3: true,
+                    snackBarTheme: const SnackBarThemeData(
+                      behavior: SnackBarBehavior.floating,
+                      dismissDirection: DismissDirection.down,
+                    ),
                   ),
                   themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
                   home: const SplashScreen(),
