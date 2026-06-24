@@ -12,4 +12,12 @@ class HistoryStore {
   static void clear() {
     _history.clear();
   }
+
+  static void removeAt(int index) {
+    _history.removeAt(index);
+  }
+
+  static void insertAt(int index, SearchHistory entry) {
+    _history.insert(index, entry);
+  }
 }
