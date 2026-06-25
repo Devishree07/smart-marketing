@@ -41,7 +41,10 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     });
 
-    await GoogleSignIn.instance.attemptLightweightAuthentication();
+    // Only auto-login if user was not manually logged out
+    if (userNotifier.value != null) {
+      await GoogleSignIn.instance.attemptLightweightAuthentication();
+    }
 
     if (mounted) setState(() => _initialized = true);
   }
