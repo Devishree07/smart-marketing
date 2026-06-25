@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'screens/home_screen.dart';
 import 'screens/history_screen.dart';
 import 'screens/settings_screen.dart';
@@ -20,9 +21,14 @@ class AccentNotifier extends ValueNotifier<Color> {
   AccentNotifier(Color value) : super(value);
 }
 
+class UserNotifier extends ValueNotifier<GoogleSignInAccount?> {
+  UserNotifier(GoogleSignInAccount? value) : super(value);
+}
+
 final ThemeNotifier themeNotifier = ThemeNotifier(false);
 final LanguageNotifier languageNotifier = LanguageNotifier('English');
 final AccentNotifier accentNotifier = AccentNotifier(Colors.indigo);
+final UserNotifier userNotifier = UserNotifier(null);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -43,6 +49,10 @@ class MyApp extends StatelessWidget {
                   theme: ThemeData(
                     colorScheme: ColorScheme.fromSeed(seedColor: accent),
                     useMaterial3: true,
+                    snackBarTheme: const SnackBarThemeData(
+                      behavior: SnackBarBehavior.floating,
+                      dismissDirection: DismissDirection.down,
+                    ),
                   ),
                   darkTheme: ThemeData(
                     colorScheme: ColorScheme.fromSeed(
@@ -50,6 +60,10 @@ class MyApp extends StatelessWidget {
                       brightness: Brightness.dark,
                     ),
                     useMaterial3: true,
+                    snackBarTheme: const SnackBarThemeData(
+                      behavior: SnackBarBehavior.floating,
+                      dismissDirection: DismissDirection.down,
+                    ),
                   ),
                   themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
                   home: const SplashScreen(),
