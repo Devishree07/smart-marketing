@@ -30,6 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
         .listen((GoogleSignInAuthenticationEvent event) {
       switch (event) {
         case GoogleSignInAuthenticationEventSignIn():
+          if (loggedOutNotifier.value) return;
           userNotifier.value = event.user;
           if (mounted) {
             Navigator.of(context).pushReplacement(
@@ -41,8 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     });
 
-    // Only auto-login if user was not manually logged out
-    if (userNotifier.value != null) {
+    if (!loggedOutNotifier.value) {
       await GoogleSignIn.instance.attemptLightweightAuthentication();
     }
 
@@ -79,6 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 else
                   ElevatedButton.icon(
                     onPressed: () async {
+                      loggedOutNotifier.value = false;
                       await GoogleSignIn.instance.authenticate();
                     },
                     icon: const Icon(Icons.login),

@@ -80,6 +80,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
 
     if (confirm == true) {
+      loggedOutNotifier.value = true;
       await GoogleSignIn.instance.signOut();
       userNotifier.value = null;
       if (mounted) {
@@ -274,7 +275,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   },
                 ),
                 const Divider(),
-                // Logout button
                 ValueListenableBuilder(
                   valueListenable: userNotifier,
                   builder: (context, user, _) {

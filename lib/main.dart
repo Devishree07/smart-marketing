@@ -29,6 +29,7 @@ final ThemeNotifier themeNotifier = ThemeNotifier(false);
 final LanguageNotifier languageNotifier = LanguageNotifier('English');
 final AccentNotifier accentNotifier = AccentNotifier(Colors.indigo);
 final UserNotifier userNotifier = UserNotifier(null);
+final ValueNotifier<bool> loggedOutNotifier = ValueNotifier<bool>(false);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
