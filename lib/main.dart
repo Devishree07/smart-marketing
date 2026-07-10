@@ -1,3 +1,4 @@
+@'
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
 import 'screens/history_screen.dart';
@@ -23,6 +24,7 @@ class AccentNotifier extends ValueNotifier<Color> {
 final ThemeNotifier themeNotifier = ThemeNotifier(false);
 final LanguageNotifier languageNotifier = LanguageNotifier('English');
 final AccentNotifier accentNotifier = AccentNotifier(Colors.indigo);
+final ValueNotifier<bool> loggedOutNotifier = ValueNotifier<bool>(false);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -110,3 +112,4 @@ class _MainShellState extends State<MainShell> {
     );
   }
 }
+'@ | Set-Content -Path "lib\main.dart" -Encoding utf8

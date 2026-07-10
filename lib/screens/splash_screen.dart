@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import '../main.dart';
 import 'login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -33,6 +34,18 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     _controller.forward();
+
+    // If logged out, skip splash and go straight to login
+    if (loggedOutNotifier.value) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
+          );
+        }
+      });
+      return;
+    }
 
     Timer(const Duration(seconds: 2), () {
       if (mounted) {

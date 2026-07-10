@@ -1,6 +1,8 @@
 ﻿import '../main.dart';
 import '../services/app_strings.dart';
+import '../screens/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 final ValueNotifier<int> leadCountNotifier = ValueNotifier<int>(5);
 
@@ -55,6 +57,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
       }
     } finally {
       setState(() => _isTranslating = false);
+    }
+  }
+
+  Future<void> _logout() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Logout'),
+        content: const Text('Are you sure you want to logout?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Logout', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      loggedOutNotifier.value = true;
+      await GoogleSignIn.instance.signOut();
+      userNotifier.value = null;
+      if (mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const LoginScreen()),
+          (route) => false,
+        );
+      }
     }
   }
 
@@ -237,6 +271,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                         ],
                       ),
+                    );
+                  },
+                ),
+                const Divider(),
+                ValueListenableBuilder(
+                  valueListenable: userNotifier,
+                  builder: (context, user, _) {
+                    if (user == null) return const SizedBox.shrink();
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          child: Text('Account',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontSize: 13)),
+                        ),
+                        ListTile(
+                          leading: user.photoUrl != null
+                              ? CircleAvatar(
+                                  backgroundImage: NetworkImage(user.photoUrl!),
+                                  radius: 16,
+                                )
+                              : const CircleAvatar(
+                                  radius: 16,
+                                  child: Icon(Icons.person, size: 16),
+                                ),
+                          title: Text(user.displayName ?? 'User'),
+                          subtitle: Text(user.email),
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.logout, color: Colors.red),
+                          title: const Text('Logout',
+                              style: TextStyle(color: Colors.red)),
+                          onTap: _logout,
+                        ),
+                      ],
                     );
                   },
                 ),

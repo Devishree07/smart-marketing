@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+﻿@'
+import 'package:flutter/material.dart';
 import '../main.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -110,3 +111,4 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+'@ | Set-Content -Path "lib\screens\login_screen.dart" -Encoding utf8
