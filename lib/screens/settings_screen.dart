@@ -1,8 +1,7 @@
-﻿import '../main.dart';
+import '../main.dart';
 import '../services/app_strings.dart';
 import '../screens/login_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 final ValueNotifier<int> leadCountNotifier = ValueNotifier<int>(5);
 
@@ -81,8 +80,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     if (confirm == true) {
       loggedOutNotifier.value = true;
-      await GoogleSignIn.instance.signOut();
-      userNotifier.value = null;
       if (mounted) {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => const LoginScreen()),
@@ -155,7 +152,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                               ),
                               child: isSelected
-                                  ? const Icon(Icons.check, color: Colors.white, size: 14)
+                                  ? const Icon(Icons.check,
+                                      color: Colors.white, size: 14)
                                   : null,
                             ),
                           );
@@ -187,7 +185,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           return GestureDetector(
                             onTap: () => leadCountNotifier.value = count,
                             child: Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 4),
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 4),
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 12, vertical: 6),
                               decoration: BoxDecoration(
@@ -196,7 +195,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     : Colors.transparent,
                                 borderRadius: BorderRadius.circular(20),
                                 border: Border.all(
-                                  color: Theme.of(context).colorScheme.primary,
+                                  color:
+                                      Theme.of(context).colorScheme.primary,
                                 ),
                               ),
                               child: Text(
@@ -226,7 +226,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         value: currentLang,
                         underline: const SizedBox(),
                         items: _languages.map((lang) {
-                          return DropdownMenuItem(value: lang, child: Text(lang));
+                          return DropdownMenuItem(
+                              value: lang, child: Text(lang));
                         }).toList(),
                         onChanged: (val) {
                           if (val != null) _changeLanguage(val);
@@ -258,7 +259,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       context: context,
                       builder: (context) => AlertDialog(
                         title: const Text('Clear Data'),
-                        content: const Text('Are you sure you want to clear all data?'),
+                        content: const Text(
+                            'Are you sure you want to clear all data?'),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
@@ -275,43 +277,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   },
                 ),
                 const Divider(),
-                ValueListenableBuilder(
-                  valueListenable: userNotifier,
-                  builder: (context, user, _) {
-                    if (user == null) return const SizedBox.shrink();
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                          child: Text('Account',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).colorScheme.primary,
-                                  fontSize: 13)),
-                        ),
-                        ListTile(
-                          leading: user.photoUrl != null
-                              ? CircleAvatar(
-                                  backgroundImage: NetworkImage(user.photoUrl!),
-                                  radius: 16,
-                                )
-                              : const CircleAvatar(
-                                  radius: 16,
-                                  child: Icon(Icons.person, size: 16),
-                                ),
-                          title: Text(user.displayName ?? 'User'),
-                          subtitle: Text(user.email),
-                        ),
-                        ListTile(
-                          leading: const Icon(Icons.logout, color: Colors.red),
-                          title: const Text('Logout',
-                              style: TextStyle(color: Colors.red)),
-                          onTap: _logout,
-                        ),
-                      ],
-                    );
-                  },
+                ListTile(
+                  leading: const Icon(Icons.logout, color: Colors.red),
+                  title: const Text('Logout',
+                      style: TextStyle(color: Colors.red)),
+                  onTap: _logout,
                 ),
               ],
             ),
@@ -325,7 +295,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   children: [
                     CircularProgressIndicator(),
                     SizedBox(height: 12),
-                    Text('Translating...', style: TextStyle(color: Colors.white)),
+                    Text('Translating...',
+                        style: TextStyle(color: Colors.white)),
                   ],
                 ),
               ),

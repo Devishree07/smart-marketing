@@ -1,5 +1,4 @@
-﻿@'
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../main.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -10,27 +9,17 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
-  bool _obscurePassword = true;
+  final _nameController = TextEditingController();
   String? _error;
 
-  void _login() {
-    final username = _usernameController.text.trim();
-    final password = _passwordController.text.trim();
-
-    if (username.isEmpty || password.isEmpty) {
-      setState(() => _error = 'Please fill in both fields.');
+  void _continue() {
+    if (_nameController.text.trim().isEmpty) {
+      setState(() => _error = 'Please enter your name.');
       return;
     }
-
-    if (username == 'admin' && password == 'admin123') {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const MainShell()),
-      );
-    } else {
-      setState(() => _error = 'Invalid username or password.');
-    }
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => const MainShell()),
+    );
   }
 
   @override
@@ -52,46 +41,34 @@ class _LoginScreenState extends State<LoginScreen> {
                         fontWeight: FontWeight.bold,
                         color: accent)),
                 const SizedBox(height: 8),
-                Text('Find leads. Grow faster.',
-                    style: TextStyle(fontSize: 15, color: Colors.grey[600])),
+                Text('AI-Powered Lead Generation',
+                    style: TextStyle(
+                        fontSize: 15, color: Colors.grey[600])),
                 const SizedBox(height: 48),
                 TextField(
-                  controller: _usernameController,
+                  controller: _nameController,
                   decoration: const InputDecoration(
-                    labelText: 'Username',
+                    labelText: 'Enter your name',
                     prefixIcon: Icon(Icons.person),
                     border: OutlineInputBorder(),
+                    hintText: 'e.g. Devishree',
                   ),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _passwordController,
-                  obscureText: _obscurePassword,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    prefixIcon: const Icon(Icons.lock),
-                    border: const OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                      icon: Icon(_obscurePassword
-                          ? Icons.visibility
-                          : Icons.visibility_off),
-                      onPressed: () => setState(
-                          () => _obscurePassword = !_obscurePassword),
-                    ),
-                  ),
+                  textCapitalization: TextCapitalization.words,
+                  onSubmitted: (_) => _continue(),
                 ),
                 if (_error != null) ...[
                   const SizedBox(height: 12),
                   Text(_error!,
-                      style: const TextStyle(color: Colors.red, fontSize: 13)),
+                      style: const TextStyle(
+                          color: Colors.red, fontSize: 13)),
                 ],
                 const SizedBox(height: 24),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
-                    onPressed: _login,
-                    icon: const Icon(Icons.login),
-                    label: const Text('Login',
+                    onPressed: _continue,
+                    icon: const Icon(Icons.arrow_forward),
+                    label: const Text('Get Started',
                         style: TextStyle(fontSize: 16)),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.all(16),
@@ -100,9 +77,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
-                Text('Default: admin / admin123',
-                    style: TextStyle(fontSize: 12, color: Colors.grey[400])),
               ],
             ),
           ),
@@ -111,4 +85,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-'@ | Set-Content -Path "lib\screens\login_screen.dart" -Encoding utf8

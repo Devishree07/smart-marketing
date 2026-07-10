@@ -1,4 +1,3 @@
-@'
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
 import 'screens/history_screen.dart';
@@ -112,4 +111,3 @@ class _MainShellState extends State<MainShell> {
     );
   }
 }
-'@ | Set-Content -Path "lib\main.dart" -Encoding utf8
