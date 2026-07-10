@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'screens/home_screen.dart';
 import 'screens/history_screen.dart';
 import 'screens/settings_screen.dart';
@@ -21,14 +20,9 @@ class AccentNotifier extends ValueNotifier<Color> {
   AccentNotifier(Color value) : super(value);
 }
 
-class UserNotifier extends ValueNotifier<GoogleSignInAccount?> {
-  UserNotifier(GoogleSignInAccount? value) : super(value);
-}
-
 final ThemeNotifier themeNotifier = ThemeNotifier(false);
 final LanguageNotifier languageNotifier = LanguageNotifier('English');
 final AccentNotifier accentNotifier = AccentNotifier(Colors.indigo);
-final UserNotifier userNotifier = UserNotifier(null);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

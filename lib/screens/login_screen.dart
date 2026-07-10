@@ -1,8 +1,4 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:google_sign_in_web/google_sign_in_web.dart' as web;
-import 'package:google_sign_in_platform_interface/google_sign_in_platform_interface.dart';
+﻿import 'package:flutter/material.dart';
 import '../main.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -13,37 +9,27 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool _initialized = false;
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool _obscurePassword = true;
+  String? _error;
 
-  @override
-  void initState() {
-    super.initState();
-    _init();
-  }
+  void _login() {
+    final username = _usernameController.text.trim();
+    final password = _passwordController.text.trim();
 
-  Future<void> _init() async {
-    await GoogleSignIn.instance.initialize(
-      clientId: '1024503649608-ecfd198ljpkshi2udo0q79s1t0ca7hti.apps.googleusercontent.com',
-    );
+    if (username.isEmpty || password.isEmpty) {
+      setState(() => _error = 'Please fill in both fields.');
+      return;
+    }
 
-    GoogleSignIn.instance.authenticationEvents
-        .listen((GoogleSignInAuthenticationEvent event) {
-      switch (event) {
-        case GoogleSignInAuthenticationEventSignIn():
-          userNotifier.value = event.user;
-          if (mounted) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => const MainShell()),
-            );
-          }
-        case GoogleSignInAuthenticationEventSignOut():
-          userNotifier.value = null;
-      }
-    });
-
-    await GoogleSignIn.instance.attemptLightweightAuthentication();
-
-    if (mounted) setState(() => _initialized = true);
+    if (username == 'admin' && password == 'admin123') {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const MainShell()),
+      );
+    } else {
+      setState(() => _error = 'Invalid username or password.');
+    }
   }
 
   @override
@@ -68,19 +54,54 @@ class _LoginScreenState extends State<LoginScreen> {
                 Text('Find leads. Grow faster.',
                     style: TextStyle(fontSize: 15, color: Colors.grey[600])),
                 const SizedBox(height: 48),
-                if (!_initialized)
-                  const CircularProgressIndicator()
-                else if (kIsWeb)
-                  (GoogleSignInPlatform.instance as web.GoogleSignInPlugin)
-                      .renderButton()
-                else
-                  ElevatedButton.icon(
-                    onPressed: () async {
-                      await GoogleSignIn.instance.authenticate();
-                    },
-                    icon: const Icon(Icons.login),
-                    label: const Text('Sign in with Google'),
+                TextField(
+                  controller: _usernameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Username',
+                    prefixIcon: Icon(Icons.person),
+                    border: OutlineInputBorder(),
                   ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _passwordController,
+                  obscureText: _obscurePassword,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    prefixIcon: const Icon(Icons.lock),
+                    border: const OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(_obscurePassword
+                          ? Icons.visibility
+                          : Icons.visibility_off),
+                      onPressed: () => setState(
+                          () => _obscurePassword = !_obscurePassword),
+                    ),
+                  ),
+                ),
+                if (_error != null) ...[
+                  const SizedBox(height: 12),
+                  Text(_error!,
+                      style: const TextStyle(color: Colors.red, fontSize: 13)),
+                ],
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: _login,
+                    icon: const Icon(Icons.login),
+                    label: const Text('Login',
+                        style: TextStyle(fontSize: 16)),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.all(16),
+                      backgroundColor: accent,
+                      foregroundColor: Colors.white,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text('Default: admin / admin123',
+                    style: TextStyle(fontSize: 12, color: Colors.grey[400])),
               ],
             ),
           ),
